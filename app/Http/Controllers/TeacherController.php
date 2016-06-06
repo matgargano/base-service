@@ -30,13 +30,21 @@ class TeacherController extends Controller {
 	public function store( Request $request ) {
 
 		$rules = [
-			'name'    => 'required',
-			'phone'   => 'required|numeric',
-			'address' => 'required',
-			'profession'  => 'required|in:engineering,math,physics'
+			'name'       => 'required',
+			'phone'      => 'required|numeric',
+			'address'    => 'required',
+			'profession' => 'required|in:engineering,math,physics'
 
 		];
 		$this->validate( $request, $rules );
+
+		$id = Teacher::where( $request->all() )->get()[0]->id;
+
+		if ( $id ) {
+			return $this->createErrorResponse( $this->alreadyExists( $id ), 422 );
+		}
+
+
 		$teacher = Teacher::create( $request->all() );
 
 		return $this->createSuccessResponse( $this->created( $teacher->id ), 201 );
@@ -44,18 +52,19 @@ class TeacherController extends Controller {
 	}
 
 
-
-	public function update($teacher) {
+	public function update( $teacher ) {
 		$to_return = __CLASS__;
 		$to_return .= '::';
 		$to_return .= __METHOD__;
+
 		return $to_return;
 	}
 
-	public function destroy($teacher) {
+	public function destroy( $teacher ) {
 		$to_return = __CLASS__;
 		$to_return .= '::';
 		$to_return .= __METHOD__;
+
 		return $to_return;
 	}
 

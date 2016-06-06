@@ -47,6 +47,14 @@ class StudentController extends Controller {
 
 		];
 		$this->validate( $request, $rules );
+
+		$id = Student::where( $request->all() )->get()[0]->id;
+
+		if ( $id ) {
+			return $this->createErrorResponse( $this->alreadyExists( $id ), 422 );
+		}
+
+
 		$student = Student::create( $request->all() );
 
 		return $this->createSuccessResponse( $this->created( $student->id ), 201 );

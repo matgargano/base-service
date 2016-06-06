@@ -27,6 +27,11 @@ class Controller extends BaseController {
 		return sprintf( 'The %s with the id of %d has been created', $noun, $id );
 	}
 
+	public function alreadyExists($id, $noun = null) {
+		$noun = $noun ?: $this->noun;
+		return sprintf( 'A very similar %s already exists at id %d', $noun, $id );
+	}
+
 	protected function buildFailedValidationResponse(Request $request, array $errors)
 	{
 		return $this->createErrorResponse($errors, 422);
