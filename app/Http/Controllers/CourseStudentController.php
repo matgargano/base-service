@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-class CourseStudentController extends BaseController {
+class CourseStudentController extends Controller {
 
 	public function index( $course ) {
 		$to_return = __CLASS__;

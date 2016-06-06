@@ -3,23 +3,27 @@
 namespace App\Http\Controllers;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
+use App\Course;
 
-class CourseController extends BaseController {
+class CourseController extends Controller {
+
+	protected $noun = 'course';
 
 	public function index() {
-		$to_return = __CLASS__;
-		$to_return .= '::';
-		$to_return .= __METHOD__;
+		$data = Course::All();
 
-		return $to_return;
+		return $this->createSuccessResponse( $data );
 	}
 
-	public function show( $course ) {
-		$to_return = __CLASS__;
-		$to_return .= '::';
-		$to_return .= __METHOD__;
+	public function show( $id ) {
 
-		return $to_return;
+		$course = Course::find( $id );
+		if ( $course ) {
+			return $this->createSuccessResponse( $course );
+		}
+
+		return $this->createErrorResponse( $this->doesNotExist( $id ) );
+
 	}
 
 }
