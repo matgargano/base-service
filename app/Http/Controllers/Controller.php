@@ -10,7 +10,7 @@ class Controller extends BaseController {
 	protected $noun = 'thing';
 
 	public function createSuccessResponse( $data, $code = 200 ) {
-		return response()->json( [ 'data' => $data ], $code );
+		return response()->json( [ 'data' => $data, 'code' => $code ], $code );
 	}
 
 	public function createErrorResponse( $message, $code = 404 ) {
@@ -23,8 +23,21 @@ class Controller extends BaseController {
 	}
 
 	public function created($id, $noun = null) {
+		return $this->createResponseText($id, $this->getShortName(__METHOD__), $noun);
+	}
+
+	public function updated($id, $noun = null) {
+		return $this->createResponseText($id, $this->getShortName(__METHOD__), $noun);
+	}
+
+	public function deleted($id, $noun = null) {
+		return $this->createResponseText($id, $this->getShortName(__METHOD__), $noun);
+	}
+
+	private function createResponseText($id, $verb, $noun = null) {
 		$noun = $noun ?: $this->noun;
-		return sprintf( 'The %s with the id of %d has been created', $noun, $id );
+		return sprintf( 'The %s with the id of %d has been %s', $noun, $id, $verb );
+
 	}
 
 	public function alreadyExists($id, $noun = null) {
@@ -37,5 +50,13 @@ class Controller extends BaseController {
 		return $this->createErrorResponse($errors, 422);
 
 
+	}
+
+	private function getShortName($longName = null){
+
+		$longNameExploded = explode('::', $longName);
+
+
+		return array_pop($longNameExploded);
 	}
 }

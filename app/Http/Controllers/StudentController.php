@@ -17,12 +17,26 @@ class StudentController extends Controller {
 	}
 
 
-	public function update() {
-		$to_return = __CLASS__;
-		$to_return .= '::';
-		$to_return .= __METHOD__;
+	public function update( Request $request, $student_id ) {
+		$student = Student::find( $student_id );
 
-		return $to_return;
+		if ( $student ) {
+
+			$this->validateRequest( $request );
+
+			$student->name    = $request->get( 'name' );
+			$student->phone   = $request->get( 'phone' );
+			$student->address = $request->get( 'address' );
+			$student->career  = $request->get( 'career' );
+
+			$student->save();
+			return $this->createSuccessResponse( $this->updated( $student_id ) );
+
+
+		}
+
+		return $this->createErrorResponse( $this->doesNotExist( $student_id ) );
+
 	}
 
 
@@ -39,14 +53,8 @@ class StudentController extends Controller {
 
 	public function store( Request $request ) {
 
-		$rules = [
-			'name'    => 'required',
-			'phone'   => 'required|numeric',
-			'address' => 'required',
-			'career'  => 'required|in:engineering,math,physics'
 
-		];
-		$this->validate( $request, $rules );
+		$this->validateRequest( $request );
 
 		$id = Student::where( $request->all() )->get()[0]->id;
 
@@ -61,12 +69,32 @@ class StudentController extends Controller {
 
 	}
 
-	public function destroy( $teacher ) {
-		$to_return = __CLASS__;
-		$to_return .= '::';
-		$to_return .= __METHOD__;
+	public function destroy( $student_id ) {
+		$student = Student::find( $student_id );
 
-		return $to_return;
+		if ( $student ) {
+
+			$student->courses()->detach();
+			$student->delete();
+
+			return $this->createSuccessResponse( $this->deleted( $student_id ) );
+
+
+		}
+
+		return $this->createErrorResponse( $this->doesNotExist( $student_id ) );
+	}
+
+	public function validateRequest( Request $request ) {
+		$rules = [
+			'name'    => 'required',
+			'phone'   => 'required|numeric',
+			'address' => 'required',
+			'career'  => 'required|in:engineering,math,physics'
+
+		];
+		$this->validate( $request, $rules );
+
 	}
 
 }
