@@ -52,19 +52,20 @@ class TeacherController extends Controller {
 	}
 
 
-
 	public function destroy( $teacher_id ) {
 		$teacher = Teacher::find( $teacher_id );
 		if ( $teacher ) {
 
 			$courses = $teacher->courses;
-			if ( sizeof($courses)>0){
-				return $this->createErrorResponse('You cannot remove a teacher who has active courses. Please remove the courses associated with the teacher first.', 409);
+			if ( sizeof( $courses ) > 0 ) {
+				return $this->createErrorResponse( 'You cannot remove a teacher who has active courses. Please remove the courses associated with the teacher first.', 409 );
 			}
 
 			$teacher->delete();
+
 			return $this->createSuccessResponse( $this->deleted( $teacher_id ) );
 		}
+
 		return $this->createErrorResponse( $this->doesNotExist( $teacher_id ) );
 	}
 
@@ -76,12 +77,13 @@ class TeacherController extends Controller {
 
 			$this->validateRequest( $request );
 
-			$teacher->name    = $request->get( 'name' );
-			$teacher->phone   = $request->get( 'phone' );
-			$teacher->address = $request->get( 'address' );
-			$teacher->profession  = $request->get( 'profession' );
+			$teacher->name       = $request->get( 'name' );
+			$teacher->phone      = $request->get( 'phone' );
+			$teacher->address    = $request->get( 'address' );
+			$teacher->profession = $request->get( 'profession' );
 
 			$teacher->save();
+
 			return $this->createSuccessResponse( $this->updated( $teacher_id ) );
 
 
@@ -94,16 +96,15 @@ class TeacherController extends Controller {
 
 	public function validateRequest( Request $request ) {
 		$rules = [
-			'name'    => 'required',
-			'phone'   => 'required|numeric',
-			'address' => 'required',
-			'profession'  => 'required|in:engineering,math,physics'
+			'name'       => 'required',
+			'phone'      => 'required|numeric',
+			'address'    => 'required',
+			'profession' => 'required|in:engineering,math,physics'
 
 		];
 		$this->validate( $request, $rules );
 
 	}
-
 
 
 }
