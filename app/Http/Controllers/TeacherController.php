@@ -5,10 +5,16 @@ namespace App\Http\Controllers;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use App\Teacher;
 use Illuminate\Http\Request;
+use LucaDegasperi\OAuth2Server\Middleware\OAuthMiddleware;
 
 class TeacherController extends Controller {
 
 	protected $noun = 'teacher';
+
+
+	public function __construct(){
+		$this->middleware('oauth', []);
+	}
 
 	public function index() {
 		$data = Teacher::All();
@@ -70,7 +76,7 @@ class TeacherController extends Controller {
 	}
 
 
-	public function update( Request $request, $teacher_id ) {
+	public function updatePut( Request $request, $teacher_id ) {
 		$teacher = Teacher::find( $teacher_id );
 
 		if ( $teacher ) {
@@ -92,6 +98,35 @@ class TeacherController extends Controller {
 		return $this->createErrorResponse( $this->doesNotExist( $teacher_id ) );
 
 	}
+
+	public function updatePatch( Request $request, $student_id ) {
+		$student = Teacher::find( $student_id );
+
+		if ( $student ) {
+
+			if ( $request->get( 'name' ) ) {
+				$student->name    = $request->get( 'name' );
+			}
+			if ( $request->get( 'phone' ) ) {
+				$student->phone = $request->get( 'phone' );
+			}
+			if ($request->get( 'address' )){
+				$student->address = $request->get( 'address' );
+			}
+			if ($request->get( 'profession' )) {
+				$student->career = $request->get( 'profession' );
+			}
+
+			$student->save();
+			return $this->createSuccessResponse( $this->updated( $student_id ) );
+
+
+		}
+
+		return $this->createErrorResponse( $this->doesNotExist( $student_id ) );
+
+	}
+
 
 
 	public function validateRequest( Request $request ) {

@@ -17,7 +17,7 @@ class StudentController extends Controller {
 	}
 
 
-	public function update( Request $request, $student_id ) {
+	public function updatePut( Request $request, $student_id ) {
 		$student = Student::find( $student_id );
 
 		if ( $student ) {
@@ -38,6 +38,35 @@ class StudentController extends Controller {
 		return $this->createErrorResponse( $this->doesNotExist( $student_id ) );
 
 	}
+
+	public function updatePatch( Request $request, $student_id ) {
+		$student = Student::find( $student_id );
+
+		if ( $student ) {
+
+			if ( $request->get( 'name' ) ) {
+				$student->name    = $request->get( 'name' );
+			}
+			if ( $request->get( 'phone' ) ) {
+				$student->phone = $request->get( 'phone' );
+			}
+			if ($request->get( 'address' )){
+				$student->address = $request->get( 'address' );
+			}
+			if ($request->get( 'career' )) {
+				$student->career = $request->get( 'career' );
+			}
+
+			$student->save();
+			return $this->createSuccessResponse( $this->updated( $student_id ) );
+
+
+		}
+
+		return $this->createErrorResponse( $this->doesNotExist( $student_id ) );
+
+	}
+
 
 
 	public function show( $id ) {
