@@ -17,6 +17,7 @@ namespace :deploy do
     on roles(:app) do
     	within release_path do
 	        execute :composer, :install
+	        execute :composer, :dumpautoload :-o
 
 	  end
     end
